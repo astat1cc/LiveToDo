@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/toDoListFragment">
+
+    <fragment
+        android:id="@+id/toDoListFragment"
+        android:name="com.github.astat1cc.livetodo.feature_todolist.ui.ToDoListFragment"
+        android:label="ToDoListFragment" />
+
+    <fragment
+        android:id="@+id/createToDoFragment"
+        android:name="com.github.astat1cc.livetodo.feature_createtodo.ui.CreateToDoFragment"
+        android:label="CreateToDoFragment">
+        <deepLink
+            app:uri="http://www.livetodo.com/create" />
+    </fragment>
+</navigation>

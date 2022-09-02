@@ -1,0 +1,5 @@
+<resources>
+    <string name="no_connection_error_message">No connection.</string>
+    <string name="service_unavailable_error_message">Service unavailable now.</string>
+    <string name="something_went_wrong_error_message">Something went wrong. Try again later.</string>
+</resources>
