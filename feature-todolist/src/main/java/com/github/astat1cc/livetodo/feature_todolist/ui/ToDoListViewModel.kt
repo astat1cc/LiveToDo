@@ -5,10 +5,9 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.github.astat1cc.livetodo.core.ResourceProvider
 import com.github.astat1cc.livetodo.feature_todolist.domain.ToDoListInteractor
-import com.github.astat1cc.livetodo.feature_todolist.domain.entities.ToDoListResponseUi
-import com.github.astat1cc.livetodo.feature_todolist.domain.mappers.ToDoListResponseDomainToUiMapper
-import com.github.astat1cc.livetodo.feature_todolist.ui.entities.ToDoListResponseUiImpl
+import com.github.astat1cc.livetodo.feature_todolist.ui.entities.ToDoListResponseUi
 import com.github.astat1cc.livetodo.feature_todolist.ui.entities.ToDoListScreenItem
+import com.github.astat1cc.livetodo.feature_todolist.ui.mappers.ToDoListResponseDomainToUiMapper
 import com.github.astat1cc.livetodo.feature_todolist.ui.mappers.ToDoListResponseUiToScreenItemsMapper
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -34,13 +33,13 @@ class ToDoListViewModel(
             val screenItems = mutableListOf<ToDoListScreenItem>()
             with(screenItems) {
                 add(ToDoListScreenItem.Greeting("Dinar")) // todo don't hardcode
-                addAll(toDoListResponse.map(responseToScreenItemMapper))
+                addAll(responseToScreenItemMapper.mapFrom(toDoListResponse))
             }
         }
     } // todo maybe observe flow itself, and not livedata
     val screenItems = _screenItems.asLiveData(dispatcher) // todo make stateflow
 
-    private var toDoListResponse: ToDoListResponseUiImpl = ToDoListResponseUiImpl.Loading
+    private var toDoListResponse: ToDoListResponseUi = ToDoListResponseUi.Loading
 
     init {
         fetchToDoList()
@@ -48,13 +47,8 @@ class ToDoListViewModel(
 
     private fun fetchToDoList() {
         viewModelScope.launch(dispatcher) {
-            val responseUi: ToDoListResponseUi =
-                interactor.fetchToDoList().map(domainToUiMapper)
-            toDoListResponse = responseUi as? ToDoListResponseUiImpl ?: ToDoListResponseUiImpl.Fail( // todo maybe improve "as"
-                errorMessage = resourceProvider.getString(
-                    com.github.astat1cc.livetodo.core.R.string.something_went_wrong_error_message
-                )
-            )
+            val responseDomain = interactor.fetchToDoList()
+            toDoListResponse = domainToUiMapper.mapFrom(responseDomain)
         }
     }
 }

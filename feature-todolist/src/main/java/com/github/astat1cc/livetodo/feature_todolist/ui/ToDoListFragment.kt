@@ -10,8 +10,6 @@ import androidx.navigation.fragment.findNavController
 import com.github.astat1cc.livetodo.core.Const
 import com.github.astat1cc.livetodo.core.ResourceProvider
 import com.github.astat1cc.livetodo.feature_todolist.databinding.FragmentToDoListBinding
-import com.github.astat1cc.livetodo.feature_todolist.domain.entities.ToDoListResponseUi
-import com.github.astat1cc.livetodo.feature_todolist.ui.entities.ToDoListResponseUiImpl
 import com.github.astat1cc.livetodo.feature_todolist.ui.entities.ToDoListScreenItem
 import com.github.astat1cc.livetodo.feature_todolist.ui.epoxy.ToDoListEpoxyController
 import com.github.astat1cc.livetodo.feature_todolist.ui.mappers.ScreenItemToEpoxyModelMapper
@@ -23,9 +21,11 @@ class ToDoListFragment : Fragment() {
 
     private val viewModel by viewModel<ToDoListViewModel>()
 
-    private val epoxyController = ToDoListEpoxyController(
-        ScreenItemToEpoxyModelMapper.Impl(ResourceProvider.Impl(requireContext())) // todo maybe inject
-    )
+    private val epoxyController by lazy {
+        ToDoListEpoxyController(
+            ScreenItemToEpoxyModelMapper.Impl(ResourceProvider.Impl(requireContext())) // todo maybe inject
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

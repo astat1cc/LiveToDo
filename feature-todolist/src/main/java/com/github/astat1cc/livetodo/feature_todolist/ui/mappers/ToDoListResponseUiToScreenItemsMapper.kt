@@ -1,30 +1,32 @@
 package com.github.astat1cc.livetodo.feature_todolist.ui.mappers
 
 import com.github.astat1cc.livetodo.core.abstracts.Abstract
+import com.github.astat1cc.livetodo.feature_todolist.ui.entities.ToDoListResponseUi
 import com.github.astat1cc.livetodo.feature_todolist.ui.entities.ToDoListScreenItem
 import com.github.astat1cc.livetodo.feature_todolist.ui.entities.ToDoUi
 
-interface ToDoListResponseUiToScreenItemsMapper : Abstract.Mapper<List<ToDoListScreenItem>> {
-
-    fun map(toDoList: List<ToDoUi>): List<ToDoListScreenItem>
-
-    fun map(errorMessage: String): List<ToDoListScreenItem>
-
-    fun map(): List<ToDoListScreenItem>
+interface ToDoListResponseUiToScreenItemsMapper :
+    Abstract.ObjectMapper<ToDoListResponseUi, List<ToDoListScreenItem>> {
 
     class Impl(
         private val mapper: ToDoUiToScreenItemMapper
     ) : ToDoListResponseUiToScreenItemsMapper {
 
-        override fun map(toDoList: List<ToDoUi>): List<ToDoListScreenItem> =
+        override fun mapFrom(source: ToDoListResponseUi): List<ToDoListScreenItem> = when (source) {
+            is ToDoListResponseUi.Success -> mapSuccess(source.toDoList)
+            is ToDoListResponseUi.Fail -> mapError(source.errorMessage)
+            is ToDoListResponseUi.Loading -> mapLoading()
+        }
+
+        private fun mapSuccess(toDoList: List<ToDoUi>): List<ToDoListScreenItem> =
             toDoList.map { toDoUi ->
-                toDoUi.map(mapper)
+                mapper.mapFrom(toDoUi)
             }
 
-        override fun map(errorMessage: String): List<ToDoListScreenItem> =
+        private fun mapError(errorMessage: String): List<ToDoListScreenItem> =
             listOf(ToDoListScreenItem.Fail(errorMessage))
 
-        override fun map(): List<ToDoListScreenItem> =
+        private fun mapLoading(): List<ToDoListScreenItem> =
             listOf(ToDoListScreenItem.Loading)
     }
 }

@@ -2,12 +2,11 @@ package com.github.astat1cc.livetodo.core.abstracts
 
 abstract class Abstract {
 
-    // object that can be mapped to type R by mapper of type M
-    interface Object<R, M : Mapper<R>> {
+    /**
+     *  Mapper that maps object A of type S to object B of type R
+     */
+    interface ObjectMapper<in S, out R> {
 
-        fun map(mapper: M): R
+        fun mapFrom(source: S): R
     }
-
-    // mapper that maps object A to object B of type T using object A fields
-    interface Mapper<T>
 }
